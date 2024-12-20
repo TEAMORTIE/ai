@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coach Dev AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="modelConfirm4" class="fixed bottom-0 right-0 mb-4 mr-4 w-64 z-10">
+      <div class="bg-white rounded-lg shadow-lg p-4">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center">
+            <img
+              src="https://www.svgrepo.com/show/401340/cookie.svg"
+              alt="Cookie"
+              class="h-6 w-6 mr-2"
+            />
+            <span class="text-gray-700 font-bold text-sm">Cookie Policy</span>
+          </div>
+          <button class="text-gray-500 hover:text-gray-700 focus:outline-none">
+            <svg
+              onclick="closeModal('modelConfirm4')"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-gray-600 text-sm">
+          Nous utilisons des cookies pour améliorer votre expérience. En
+          continuant à visiter ce site, vous acceptez notre utilisation de
+          cookies.
+        </p>
+        <button
+          onclick="closeModal('modelConfirm4')"
+          class="mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Accept
+        </button>
+      </div>
+    </div>
+    <div class="area">
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+    <nav
+      x-data="{
+  navigationMenuOpen: false,
+  navigationMenu: '',
+  navigationMenuCloseDelay: 200,
+  navigationMenuCloseTimeout: null,
+  navigationMenuLeave() {
+  let that = this;
+  this.navigationMenuCloseTimeout = setTimeout(() => {
+  that.navigationMenuClose();
+  }, this.navigationMenuCloseDelay);
+  },
+  navigationMenuReposition(navElement) {
+  this.navigationMenuClearCloseTimeout();
+  this.$refs.navigationDropdown.style.left = navElement.offsetLeft + 'px';
+  this.$refs.navigationDropdown.style.marginLeft = (navElement.offsetWidth/2) + 'px';
+  },
+  navigationMenuClearCloseTimeout(){
+  clearTimeout(this.navigationMenuCloseTimeout);
+  },
+  navigationMenuClose(){
+  this.navigationMenuOpen = false;
+  this.navigationMenu = '';
+  }
+  }"
+      class="relative z-10 w-auto"
+    >
+      <div class="relative">
+        <ul
+          class="flex items-center justify-center flex-1 p-1 space-x-1 list-none border rounded-md text-neutral-700 group border-neutral-200/80"
+        >
+          <li>
+            <button
+              :class="{ 'bg-neutral-100' : navigationMenu=='getting-started', 'hover:bg-neutral-100' : navigationMenu!='getting-started' }"
+              @mouseover="navigationMenuOpen=true; navigationMenuReposition($el); navigationMenu='getting-started'"
+              @mouseleave="navigationMenuLeave()"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max"
+            >
+              <span>Commencer</span>
+              <svg
+                :class="{ '-rotate-180' : navigationMenuOpen==true && navigationMenu == 'getting-started' }"
+                class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </li>
+          <li>
+            <button
+              :class="{ 'bg-neutral-100' : navigationMenu=='learn-more', 'hover:bg-neutral-100' : navigationMenu!='learn-more' }"
+              @mouseover="navigationMenuOpen=true; navigationMenuReposition($el); navigationMenu='learn-more'"
+              @mouseleave="navigationMenuLeave()"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group w-max"
+            >
+              <span>Apprendre</span>
+              <svg
+                :class="{ '-rotate-180' : navigationMenuOpen==true && navigationMenu == 'learn-more' }"
+                class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </li>
+          <li>
+            <a
+              href="document.html"
+              class="inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group w-max"
+            >
+              Documentation
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div
+        x-ref="navigationDropdown"
+        x-show="navigationMenuOpen"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-100"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-90"
+        @mouseover="navigationMenuClearCloseTimeout()"
+        @mouseleave="navigationMenuLeave()"
+        class="absolute top-0 pt-3 duration-200 ease-out -translate-x-1/2 translate-y-11"
+        x-cloak
+      >
+        <div
+          class="flex justify-center w-auto h-auto overflow-hidden bg-white border rounded-md shadow-sm border-neutral-200/70"
+        >
+          <div
+            x-show="navigationMenu == 'getting-started'"
+            class="flex items-stretch justify-center w-full max-w-2xl p-6 gap-x-3"
+          >
+            <div
+              class="flex-shrink-0 w-48 rounded pt-28 pb-7 bg-gradient-to-br from-neutral-800 to-black"
+            >
+              <div class="relative px-7 space-y-1.5 text-white">
+                <svg
+                  class="block w-auto h-9"
+                  viewBox="0 0 180 180"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M67.683 89.217h44.634l30.9 53.218H36.783l30.9-53.218Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M77.478 120.522h21.913v46.956H77.478v-46.956Zm-34.434-29.74 45.59-78.26 46.757 78.26H43.044Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span class="block font-bold">Coach IA</span>
+                <span class="block text-sm opacity-60"
+                  >Une ia pour les futures dévelopeurs</span
+                >
+              </div>
+            </div>
+            <div class="w-72">
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black"
+                  >Introduction</span
+                >
+                <span class="block font-light leading-5 opacity-50"
+                  >Connaitre Coach IA et ces fonctionnalités premières.</span
+                >
+              </a>
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black"
+                  >Utilitaires</span
+                >
+                <span class="block leading-5 opacity-50"
+                  >Les utilitaires pour utiliser cette IA</span
+                >
+              </a>
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black">
+                  S'inscrire
+                </span>
+                <span class="block leading-5 opacity-50"
+                  >Inscrivez-vous pour être sur la file d'attente de la
+                  bêta</span
+                >
+              </a>
+            </div>
+          </div>
+          <div
+            x-show="navigationMenu == 'learn-more'"
+            class="flex items-stretch justify-center w-full p-6"
+          >
+            <div class="w-72">
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black"
+                  >Configuration</span
+                >
+                <span class="block font-light leading-5 opacity-50"
+                  >Apprendre a configurer une IA avec lm studio</span
+                >
+              </a>
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black">LM studio</span>
+                <span class="block font-light leading-5 opacity-50"
+                  >Apprendre les bases de LM studio et ces fonctionnalités</span
+                >
+              </a>
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black">IA avancé</span>
+                <span class="block leading-5 opacity-50"
+                  >Apprendre plus sur l'IA et ces fonctionnalités.
+                </span>
+              </a>
+            </div>
+            <div class="w-72">
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black"
+                  >IA open-source</span
+                >
+                <span class="block font-light leading-5 opacity-50"
+                  >Trouver, installer et utilisé une IA open-source.</span
+                >
+              </a>
+              <a
+                href="#_"
+                @click="navigationMenuClose()"
+                class="block px-3.5 py-3 text-sm rounded hover:bg-neutral-100"
+              >
+                <span class="block mb-1 font-medium text-black"
+                  >Configuration IA avancés</span
+                >
+                <span class="block leading-5 opacity-50"
+                  >Apprendre a configurer une IA avancés</span
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="max-w-screen-xl mx-auto py-8 px-4 lg:py-16 lg:px-6">
+      <div class="text-center mb-10">
+        <h2 class="text-4xl tracking-tight font-bold text-primary-800">
+          Highlighted Features
+        </h2>
+      </div>
+
+      <div class="flex flex-col md:flex-row">
+        <!-- can help image -->
+        <div class="mr-0 md:mr-8 mb-6 md:mb-0">
+          <img
+            class="w-1/2 md:w-full mx-auto"
+            src="img/ia2 (Personnalisé).jpeg"
+            alt="can_help_banner"
+          />
+        </div>
+        <!-- end can help image -->
+
+        <div class="flex-1 flex flex-col sm:flex-row flex-wrap -mb-4 -mx-2">
+          <div class="w-full sm:w-1/2 mb-4 px-2">
+            <div
+              class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl"
+            >
+              <h3 class="text-2xl font-bold text-md mb-6">
+                Analyse et Prise de Décision en Temps Réel
+              </h3>
+              <p class="text-sm">
+                Votre IA fournit des analyses rapides et précises en
+                interprétant de grandes quantités de données. Idéale pour des
+                applications nécessitant des décisions instantanées, elle
+                détecte les tendances, optimise les actions et ajuste les
+                recommandations en temps réel.
+              </p>
+            </div>
+          </div>
+          <div class="w-full sm:w-1/2 mb-4 px-2">
+            <div
+              class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl"
+            >
+              <h3 class="text-2xl font-bold text-md mb-6">
+                Apprentissage Continu et Adaptabilité
+              </h3>
+              <p class="text-sm">
+                Grâce à l’intégration de modèles d’apprentissage automatique,
+                votre IA évolue avec le temps. Elle s'adapte aux besoins
+                changeants de l'utilisateur et devient plus performante à chaque
+                interaction, garantissant une amélioration constante.
+              </p>
+            </div>
+          </div>
+
+          <div class="w-full sm:w-1/2 mb-4 px-2">
+            <div
+              class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl"
+            >
+              <h3 class="text-2xl font-bold text-md mb-6">
+                Automatisation des Tâches Répétitives
+              </h3>
+              <p class="text-sm">
+                Simplifiez vos opérations avec une automatisation fluide. L'IA
+                prend en charge les tâches répétitives, comme le tri des
+                informations, la gestion des demandes ou l’organisation des
+                processus, permettant un gain de temps et une réduction des
+                erreurs.
+              </p>
+            </div>
+          </div>
+
+          <div class="w-full sm:w-1/2 mb-4 px-2">
+            <div
+              class="h-full py-4 px-6 border border-green-500 border-t-0 border-l-0 rounded-br-xl"
+            >
+              <h3 class="text-2xl font-bold text-md mb-6">
+                Personnalisation des Interactions Utilisateur
+              </h3>
+              <p class="text-sm">
+                L'IA propose des expériences sur mesure grâce à une
+                compréhension approfondie des préférences utilisateur. Elle
+                personnalise les réponses, anticipe les besoins et améliore
+                l’engagement avec des interactions naturelles et pertinentes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- inspired by tailwindcss.com -->
+    <ul
+      class="grid grid-cols-1 xl:grid-cols-3 gap-y-10 gap-x-6 items-start p-8"
+    >
+      <li class="relative flex flex-col sm:flex-row xl:flex-col items-start">
+        <div class="order-1 sm:ml-6 xl:ml-0">
+          <h3 class="mb-1 text-slate-900 font-semibold">
+            <span class="mb-1 block text-sm leading-6 text-indigo-500"
+              >Utilitaires</span
+            >Utilisé Coach Dev IA
+          </h3>
+          <div class="prose prose-slate prose-sm text-slate-600">
+            <p>
+              Comment utilisé correctement Coach Dev IA sur son ordinateur ou
+              téléphone.
+            </p>
+          </div>
+          <a
+            class="group inline-flex items-center h-9 rounded-full text-sm font-semibold whitespace-nowrap px-3 focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500 mt-6"
+            href=""
+            >voir plus<span class="sr-only"></span>
+            <svg
+              class="overflow-visible ml-3 text-slate-300 group-hover:text-slate-400"
+              width="3"
+              height="6"
+              viewBox="0 0 3 6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M0 0L3 3L0 6"></path>
+            </svg>
+          </a>
+        </div>
+        <img
+          src="img/Intelligence-artificielle-et-developpement-web-ib-Cegos.jpg"
+          alt=""
+          class="mb-6 shadow-md rounded-lg bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
+          width="1216"
+          height="640"
+        />
+      </li>
+      <li class="relative flex flex-col sm:flex-row xl:flex-col items-start">
+        <div class="order-1 sm:ml-6 xl:ml-0">
+          <h3 class="mb-1 text-slate-900 font-semibold">
+            <span class="mb-1 block text-sm leading-6 text-purple-500"
+              >utilitaires</span
+            >Les prérequis
+          </h3>
+          <div class="prose prose-slate prose-sm text-slate-600">
+            <p>
+              Coach Dev IA demande une quantités d'énergie et de puissance pour
+              fonctionné correctement.
+            </p>
+          </div>
+          <a
+            class="group inline-flex items-center h-9 rounded-full text-sm font-semibold whitespace-nowrap px-3 focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500 mt-6"
+            href=""
+            >Voir plus<span class="sr-only"></span>
+            <svg
+              class="overflow-visible ml-3 text-slate-300 group-hover:text-slate-400"
+              width="3"
+              height="6"
+              viewBox="0 0 3 6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M0 0L3 3L0 6"></path>
+            </svg>
+          </a>
+        </div>
+        <img
+          src="img/1687764982709.jpg"
+          alt=""
+          class="mb-6 shadow-md rounded-lg bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
+          width="1216"
+          height="640"
+        />
+      </li>
+      <li class="relative flex flex-col sm:flex-row xl:flex-col items-start">
+        <div class="order-1 sm:ml-6 xl:ml-0">
+          <h3 class="mb-1 text-slate-900 font-semibold">
+            <span class="mb-1 block text-sm leading-6 text-cyan-500"
+              >S'inscrire</span
+            >Inscription à la bêta de Coach Dev IA
+          </h3>
+          <div class="prose prose-slate prose-sm text-slate-600">
+            <p>
+              Coach Dev IA sera lancé le 07/05/25 en bêta, réservé vos places
+              dès maintenant pour être sur d'en avoir.
+            </p>
+          </div>
+          <a
+            class="group inline-flex items-center h-9 rounded-full text-sm font-semibold whitespace-nowrap px-3 focus:outline-none focus:ring-2 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 focus:ring-slate-500 mt-6"
+            href=""
+            >Voir plus<span class="sr-only"></span>
+            <svg
+              class="overflow-visible ml-3 text-slate-300 group-hover:text-slate-400"
+              width="3"
+              height="6"
+              viewBox="0 0 3 6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M0 0L3 3L0 6"></path>
+            </svg>
+          </a>
+        </div>
+        <img
+          src="img/IA_Finance_1206796363_692x411.jpeg"
+          alt=""
+          class="mb-6 shadow-md rounded-lg bg-slate-50 w-full sm:w-[17rem] sm:mb-0 xl:mb-6 xl:w-full"
+          width="1216"
+          height="640"
+        />
+      </li>
+    </ul>
+    <footer class="text-sm leading-6 mt-8 px-3">
+      <div
+        class="pt-10 pb-28 border-t border-slate-200 sm:flex justify-between text-slate-500"
+      >
+        <div class="mb-6 sm:mb-0 sm:flex">
+          <p>Copyright © 2023 Tailwind Labs Inc.</p>
+          <p class="sm:ml-4 sm:pl-4 sm:border-l sm:border-slate-200">
+            <a class="hover:text-slate-900" href="/brand">Trademark Policy</a>
+          </p>
+        </div>
+        <div class="flex space-x-10 text-slate-400">
+          <a
+            href="https://github.com/tailwindlabs/tailwindcss"
+            class="hover:text-slate-500"
+          >
+            <span class="sr-only">GitHub</span
+            ><svg width="25" height="24" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M12.846 0c-6.63 0-12 5.506-12 12.303 0 5.445 3.435 10.043 8.205 11.674.6.107.825-.262.825-.585 0-.292-.015-1.261-.015-2.291-3.015.569-3.795-.754-4.035-1.446-.135-.354-.72-1.446-1.23-1.738-.42-.23-1.02-.8-.015-.815.945-.015 1.62.892 1.845 1.261 1.08 1.86 2.805 1.338 3.495 1.015.105-.8.42-1.338.765-1.645-2.67-.308-5.46-1.37-5.46-6.075 0-1.338.465-2.446 1.23-3.307-.12-.308-.54-1.569.12-3.26 0 0 1.005-.323 3.3 1.26.96-.276 1.98-.415 3-.415s2.04.139 3 .416c2.295-1.6 3.3-1.261 3.3-1.261.66 1.691.24 2.952.12 3.26.765.861 1.23 1.953 1.23 3.307 0 4.721-2.805 5.767-5.475 6.075.435.384.81 1.122.81 2.276 0 1.645-.015 2.968-.015 3.383 0 .323.225.707.825.585a12.047 12.047 0 0 0 5.919-4.489 12.537 12.537 0 0 0 2.256-7.184c0-6.798-5.37-12.304-12-12.304Z"
+              ></path>
+            </svg>
+          </a>
+          <a href="/discord" class="hover:text-slate-500">
+            <span class="sr-only">Discord</span
+            ><svg width="23" height="24" fill="currentColor">
+              <path
+                d="M9.555 9.23c-.74 0-1.324.624-1.324 1.385S8.827 12 9.555 12c.739 0 1.323-.624 1.323-1.385.013-.761-.584-1.385-1.323-1.385Zm4.737 0c-.74 0-1.324.624-1.324 1.385S13.564 12 14.292 12c.74 0 1.324-.624 1.324-1.385s-.584-1.385-1.324-1.385Z"
+              ></path>
+              <path
+                d="M20.404 0H3.442c-.342 0-.68.065-.995.19a2.614 2.614 0 0 0-.843.536 2.46 2.46 0 0 0-.562.801c-.13.3-.197.62-.196.944v16.225c0 .324.066.645.196.944.13.3.321.572.562.801.241.23.527.412.843.537.315.124.653.189.995.19h14.354l-.67-2.22 1.62 1.428 1.532 1.344L23 24V2.472c0-.324-.066-.644-.196-.944a2.46 2.46 0 0 0-.562-.8A2.614 2.614 0 0 0 21.4.19a2.726 2.726 0 0 0-.995-.19V0Zm-4.886 15.672s-.456-.516-.836-.972c1.659-.444 2.292-1.428 2.292-1.428a7.38 7.38 0 0 1-1.456.707 8.67 8.67 0 0 1-1.836.517 9.347 9.347 0 0 1-3.279-.012 11.074 11.074 0 0 1-1.86-.516 7.621 7.621 0 0 1-.924-.409c-.039-.023-.076-.035-.113-.06-.027-.011-.04-.023-.052-.035-.228-.12-.354-.204-.354-.204s.608.96 2.215 1.416c-.38.456-.848.996-.848.996-2.797-.084-3.86-1.824-3.86-1.824 0-3.864 1.822-6.996 1.822-6.996 1.823-1.296 3.557-1.26 3.557-1.26l.127.145c-2.278.623-3.33 1.57-3.33 1.57s.279-.143.747-.347c1.355-.564 2.43-.72 2.873-.756.077-.012.14-.024.216-.024a10.804 10.804 0 0 1 6.368 1.129s-1.001-.9-3.153-1.526l.178-.19s1.735-.037 3.557 1.259c0 0 1.823 3.133 1.823 6.996 0 0-1.076 1.74-3.874 1.824Z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+    <script src="//unpkg.com/alpinejs"></script>
+    <script src="script2.js"></script>
+  </body>
+</html>
